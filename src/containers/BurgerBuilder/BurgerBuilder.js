@@ -5,10 +5,10 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 
 const INGREDIENT_PRICES = {
-    salad: 50,
-    cheese: 40,
-    meat: 130,
-    bacon: 70,
+    salad: 0.50,
+    cheese: 0.40,
+    meat: 1.30,
+    bacon: 0.70,
 };
 
 class BurgerBuilder extends Component {
@@ -19,7 +19,7 @@ class BurgerBuilder extends Component {
             cheese: 0,
             meat: 0,
         },
-        totalPrice: 400,
+        totalPrice: 4.00,
         canPurchase: false,
     }
 
