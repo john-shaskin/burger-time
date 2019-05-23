@@ -26,7 +26,7 @@ class Checkout extends Component {
       let price = 0;
       for (var entry of query.entries()) {
         if (entry[0] === 'price') {
-          price = Number.parseInt(entry[1]);
+          price = Number.parseFloat(entry[1]);
         }
         else {
           const key = entry[0];
