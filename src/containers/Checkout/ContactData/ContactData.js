@@ -15,7 +15,11 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+        },
+        isValid: false,
       },
       street: {
         elementType: 'input',
@@ -23,7 +27,11 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Street address'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+        },
+        isValid: false,
       },
       postal: {
         elementType: 'input',
@@ -31,7 +39,13 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Postal code'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+          minLength: 6,
+          maxLength: 6,
+        },
+        isValid: false,
       },
       country: {
         elementType: 'input',
@@ -39,7 +53,11 @@ class ContactData extends Component {
           type: 'text',
           placeholder: 'Country'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+        },
+        isValid: false,
       },
       email: {
         elementType: 'input',
@@ -47,7 +65,11 @@ class ContactData extends Component {
           type: 'email',
           placeholder: 'Email address'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+        },
+        isValid: false,
       },
       deliveryMethod: {
         elementType: 'select',
@@ -58,7 +80,9 @@ class ContactData extends Component {
             { value: 'zeus', displayValue: 'Zeus Himself'},
           ]
         },
-        value: ''
+        value: '',
+        validation: {},
+        isValid: true,
       },
     },
     loading: false,
@@ -87,8 +111,25 @@ class ContactData extends Component {
       });
   }
 
+  validateInput(value, rules) {
+    let isValid = true;
+
+    if (rules.required) {
+      isValid = isValid && value.trim() !== '';
+    }
+
+    if (rules.minLength) {
+      isValid = isValid && value.trim().length >= rules.minLength;
+    }
+
+    if (rules.maxLength) {
+      isValid = isValid && value.trim().length <= rules.maxLength;
+    }
+
+    return isValid;
+  }
+
   inputChangedHandler = (event, inputIdentifier) => {
-    console.log(event.target.value);
     const updatedForm = {
       ...this.state.orderForm
     };
@@ -96,6 +137,7 @@ class ContactData extends Component {
       ...updatedForm[inputIdentifier]
     };
     updatedInput.value = event.target.value;
+    updatedInput.isValid = this.validateInput(updatedInput.value, updatedInput.validation);
     updatedForm[inputIdentifier] = updatedInput;
     this.setState({ orderForm: updatedForm });
   }
@@ -116,6 +158,7 @@ class ContactData extends Component {
             elementType={formElement.config.elementType}
             elementConfig={formElement.config.elementConfig}
             value={formElement.config.value}
+            invalid={!formElement.config.isValid}
             changed={(event) => this.inputChangedHandler(event, formElement.id)} />
         ))}
         <Button btnType="Success">ORDER</Button>
