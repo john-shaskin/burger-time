@@ -94,12 +94,12 @@ class ContactData extends Component {
         elementType: 'select',
         elementConfig: {
           options: [
-            { value: 'rowboat', displayValue: 'Fastest'},
+            { value: 'rowboat', displayValue: 'Rowboat'},
             { value: 'sloth', displayValue: 'Sloth'},
             { value: 'zeus', displayValue: 'Zeus Himself'},
           ]
         },
-        value: '',
+        value: 'rowboat',
         validation: {},
         validationResult: {
           isValid: true,
