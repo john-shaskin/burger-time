@@ -11,16 +11,8 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios-orders';
 import * as actionTypes from '../../store/actions';
 
-const INGREDIENT_PRICES = {
-    salad: 0.50,
-    cheese: 0.40,
-    meat: 1.30,
-    bacon: 0.70,
-};
-
 class BurgerBuilder extends Component {
     state = {
-        totalPrice: 4.00,
         canPurchase: false,
         purchasing: false,
         loading: false,
@@ -53,38 +45,6 @@ class BurgerBuilder extends Component {
             }, 0);
         this.setState({ canPurchase: sum > 0 });
     }
-
-    // addIngredientHandler = (type) => {
-    //     const oldCount = this.props.ings[type];
-    //     const updatedCount = oldCount + 1;
-    //     const updatedIngredients = {
-    //         ...this.props.ings
-    //     };
-    //     updatedIngredients[type] = updatedCount;
-
-    //     const priceChange = INGREDIENT_PRICES[type];
-    //     const oldPrice = this.state.totalPrice;
-    //     const newPrice = oldPrice + priceChange;
-    //     this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
-    //     this.updateCanPurchase(updatedIngredients);
-    // };
-
-    // removeIngredientHandler = (type) => {
-    //     const oldCount = this.props.ings[type];
-    //     if (oldCount > 0) {
-    //         const updatedCount = oldCount - 1;
-    //         const updatedIngredients = {
-    //             ...this.props.ings
-    //         };
-    //         updatedIngredients[type] = updatedCount;
-
-    //         const priceChange = INGREDIENT_PRICES[type];
-    //         const oldPrice = this.state.totalPrice;
-    //         const newPrice = oldPrice - priceChange;
-    //         this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
-    //         this.updateCanPurchase(updatedIngredients);
-    //     }
-    // };
 
     purchaseHandler = () => {
         this.setState({ purchasing: true });
@@ -128,14 +88,14 @@ class BurgerBuilder extends Component {
                         disabled={disabledInfo}
                         canPurchase={this.state.canPurchase}
                         ordered={this.purchaseHandler}
-                        price={this.state.totalPrice} />
+                        price={this.props.price} />
                 </Aux>
             );
 
             modalContent = (
                 <OrderSummary
                     ingredients={this.props.ings}
-                    price={this.state.totalPrice}
+                    price={this.props.price}
                     purchaseCanceled={this.purchaseCancelHandler}
                     purchaseContinued={this.purchaseContinueHandler} />
             );
@@ -165,7 +125,8 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
     return {
-        ings: state.ingredients
+        ings: state.ingredients,
+        price: state.totalPrice,
     }
 }
 
