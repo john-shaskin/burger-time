@@ -26,20 +26,21 @@ class BurgerBuilder extends Component {
         error: false,
     }
 
-    componentDidMount() {
-        axios.get('https://burger-time-b9943.firebaseio.com/ingredients.json')
-            .then(response => {
-                if (response && response.status === 200) {
-                    this.setState({ ingredients: response.data });
-                }
-                else {
-                    this.setState({ error: true });
-                }
-            })
-            .catch(_ => {
-                this.setState({ error: true });
-            });
-    }
+    // TODO: Re-enable this, once we get to async code and redux
+    // componentDidMount() {
+    //     axios.get('https://burger-time-b9943.firebaseio.com/ingredients.json')
+    //         .then(response => {
+    //             if (response && response.status === 200) {
+    //                 this.setState({ ingredients: response.data });
+    //             }
+    //             else {
+    //                 this.setState({ error: true });
+    //             }
+    //         })
+    //         .catch(_ => {
+    //             this.setState({ error: true });
+    //         });
+    // }
 
     updateCanPurchase(ingredients) {
         const sum = Object.keys(ingredients)
