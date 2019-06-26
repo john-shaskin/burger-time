@@ -14,24 +14,10 @@ import * as actions from '../../store/actions';
 class BurgerBuilder extends Component {
     state = {
         purchasing: false,
-        loading: false,
-        error: false,
     }
 
     // TODO: Re-enable this, once we get to async code and redux
     // componentDidMount() {
-    //     axios.get('https://burger-time-b9943.firebaseio.com/ingredients.json')
-    //         .then(response => {
-    //             if (response && response.status === 200) {
-    //                 this.setState({ ingredients: response.data });
-    //             }
-    //             else {
-    //                 this.setState({ error: true });
-    //             }
-    //         })
-    //         .catch(_ => {
-    //             this.setState({ error: true });
-    //         });
     // }
 
     canPurchase(ingredients) {
