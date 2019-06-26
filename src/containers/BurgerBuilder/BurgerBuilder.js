@@ -16,9 +16,9 @@ class BurgerBuilder extends Component {
         purchasing: false,
     }
 
-    // TODO: Re-enable this, once we get to async code and redux
-    // componentDidMount() {
-    // }
+    componentDidMount() {
+        this.props.onInitiIngredients();
+    }
 
     canPurchase(ingredients) {
         const sum = Object.keys(ingredients)
@@ -53,7 +53,7 @@ class BurgerBuilder extends Component {
             disabledInfo[key] = disabledInfo[key] <= 0;
         }
         let modalContent = null;
-        let burger = this.state.error ? <p>The application is fucked.</p> : <Spinner />;
+        let burger = this.props.error ? <p>No burger for you!</p> : <Spinner />;
 
         if (this.props.ings) {
             burger = (
@@ -98,6 +98,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
         onIngredientRemoved: (ingName) => dispatch(actions.removeIngredient(ingName)),
+        onInitiIngredients: () => dispatch(actions.initIngredients()),
     }
 }
 
@@ -105,6 +106,7 @@ const mapStateToProps = (state) => {
     return {
         ings: state.ingredients,
         price: state.totalPrice,
+        error: state.error,
     }
 }
 
