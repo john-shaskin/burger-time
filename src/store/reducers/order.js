@@ -7,6 +7,12 @@ const initialState = {
 
 const reducer = (state=initialState, action) => {
   switch(action.type) {
+    case actionTypes.ORDER_INIT:
+      return {
+        ...state,
+        ordered: false,
+      }
+
     case actionTypes.ORDER_BURGER_SUBMITTED:
       return {
         ...state,
@@ -22,6 +28,7 @@ const reducer = (state=initialState, action) => {
       return {
         ...state,
         loading: false,
+        ordered: true,
         orders: state.orders.concat(order),
       };
 
