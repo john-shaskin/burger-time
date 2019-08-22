@@ -40,6 +40,7 @@ class Auth extends Component {
         },
       },
     },
+    formIsValid: false,
   };
 
   render() {
@@ -118,7 +119,12 @@ class Auth extends Component {
       }
     };
 
-    this.setState({ controls: updatedControls });
+    let formIsValid = true;
+    for (let inputId in updatedControls) {
+      formIsValid = formIsValid && updatedControls[inputId].validationResult.isValid;
+    }
+
+    this.setState({ controls: updatedControls, formIsValid });
   }
 }
 
