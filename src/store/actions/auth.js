@@ -22,7 +22,7 @@ export const authFailed = (error) => {
   };
 };
 
-export const auth = (email, password) => {
+export const auth = (email, password, isSignup) => {
   return dispatch => {
     dispatch(authStart());
 
@@ -31,19 +31,25 @@ export const auth = (email, password) => {
       return Promise.reject('There is no configured API key for Firebase');
     }
 
-    axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
-    {
+    let url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`;
+    let postData = {
       email,
       password,
       returnSecureToken: true,
-    })
+    };
+
+    if (!isSignup) {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+    }
+
+    axios.post(url, postData)
       .then(response => {
         console.log(response);
         dispatch(authSucceeded(response.data));
       })
       .catch(err => {
         console.log(err);
-        dispatch(authFailed());
+        dispatch(authFailed(err));
       });
 
   };
