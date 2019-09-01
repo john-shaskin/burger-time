@@ -13,7 +13,7 @@ const authStart = (state, action) => {
 }
 
 const authSucceeded = (state, action) => {
-  return updateObject(state, { error: null, loading: false, idToken: action.idToken, userId: action.userId });
+  return updateObject(state, { error: null, loading: false, token: action.idToken, userId: action.userId });
 }
 
 const authFailed = (state, action) => {

@@ -128,7 +128,7 @@ class ContactData extends Component {
       orderData: formData,
     };
 
-    this.props.onSubmitOrder(order);
+    this.props.onSubmitOrder(order, this.props.authToken);
   }
 
   validateInput(key, value, rules) {
@@ -213,12 +213,13 @@ const mapStateToProps = state => {
     ings: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
+    authToken: state.auth.token,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSubmitOrder: (orderData) => dispatch(actions.orderBurger(orderData)),
+    onSubmitOrder: (orderData, authToken) => dispatch(actions.orderBurger(orderData, authToken)),
   }
 }
 
