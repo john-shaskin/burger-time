@@ -2,6 +2,9 @@ import axios from 'axios';
 
 import * as actionTypes from './actionTypes';
 
+const TOKEN_KEY = 'token';
+const EXPIRATION_TIME_KEY = 'expirationTime';
+
 export const authStart = () => {
   return {
     type: actionTypes.AUTH_START,
@@ -24,6 +27,9 @@ export const authFailed = (error) => {
 };
 
 export const logout = () => {
+
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(EXPIRATION_TIME_KEY);
   return {
     type: actionTypes.AUTH_LOGOUT,
   };
@@ -60,6 +66,8 @@ export const auth = (email, password, isSignup) => {
     axios.post(url, postData)
       .then(response => {
         console.log(response);
+        localStorage.setItem(TOKEN_KEY, response.data.idToken);
+        localStorage.setItem(EXPIRATION_TIME_KEY, new Date(new Date().getTime() + response.data.expiresIn * 1000));
         dispatch(authSucceeded(response.data.idToken, response.data.localId));
         dispatch(checkAuthTimeout(response.data.expiresIn));
       })
@@ -76,3 +84,34 @@ export const setAuthRedirectPath = (path) => {
     path: path,
   };
 };
+
+export const authCheckState = () => {
+  return dispatch => {
+    const apiKey = process.env.REACT_APP_FIREBASE_API_KEY;
+    if (!apiKey) {
+      return Promise.reject('There is no configured API key for Firebase');
+    }
+
+    const token = localStorage.getItem(TOKEN_KEY);
+    const expirationTimeStr = localStorage.getItem(EXPIRATION_TIME_KEY);
+    if (token && expirationTimeStr) {
+      const expiry = new Date(expirationTimeStr);
+      const now = new Date();
+
+      if (expiry < now) {
+        dispatch(logout());
+      } else {
+        axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`, {
+          idToken: token,
+        }).then(response => {
+          dispatch(authSucceeded(token, response.data.localId));
+          dispatch(checkAuthTimeout((expiry.getTime() - new Date().getTime()) / 1000));
+        }).catch(err => {
+          dispatch(authFailed(err));
+        });
+      }
+    } else {
+      dispatch(logout());
+    }
+  }
+}
