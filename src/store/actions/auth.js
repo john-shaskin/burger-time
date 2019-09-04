@@ -104,7 +104,7 @@ export const authCheckState = () => {
         axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`, {
           idToken: token,
         }).then(response => {
-          dispatch(authSucceeded(token, response.data.localId));
+          dispatch(authSucceeded(token, response.data.users[0].localId));
           dispatch(checkAuthTimeout((expiry.getTime() - new Date().getTime()) / 1000));
         }).catch(err => {
           dispatch(authFailed(err));
