@@ -8,6 +8,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions';
+import { updateObject } from '../../../shared/utility';
 
 class ContactData extends Component {
   state = {
@@ -86,6 +87,7 @@ class ContactData extends Component {
         value: '',
         validation: {
           required: true,
+          isEmail: true,
         },
         validationResult: {
           isValid: false,
@@ -151,26 +153,37 @@ class ContactData extends Component {
       errorMessage = `${key} cannot be more than ${rules.maxLength} characters.`
     }
 
+    if (isValid && rules.isEmail) {
+      const pattern = /^(?=[A-Z0-9][A-Z0-9@._%+-]{5,253}$)[A-Z0-9._%+-]{1,64}@(?:(?=[A-Z0-9-]{1,63}\.)[A-Z0-9]+(?:-[A-Z0-9]+)*\.){1,8}[A-Z]{2,63}$/;
+      isValid = pattern.test(value.toUpperCase());
+      errorMessage = `${key} must be a valid email address`;
+    }
+
+    if (isValid && rules.isNumeric) {
+      const pattern = /^\d+$/;
+      isValid = pattern.test(value);
+      errorMessage = `${key} is a numeric value.`;
+    }
+
     return { isValid, errorMessage };
   }
 
   inputChangedHandler = (event, inputIdentifier) => {
-    const updatedForm = {
-      ...this.state.orderForm
-    };
-    const updatedInput = {
-      ...updatedForm[inputIdentifier]
-    };
-    updatedInput.value = event.target.value;
-    updatedInput.validationResult = this.validateInput(inputIdentifier, updatedInput.value, updatedInput.validation);
-    updatedInput.touched = true;
-    updatedForm[inputIdentifier] = updatedInput;
+    const updatedInput = updateObject(this.state.orderForm[inputIdentifier], {
+      value: event.target.value,
+      validationResult: this.validateInput(inputIdentifier, event.target.value, this.state.orderForm[inputIdentifier].validation),
+      touched: true,
+    });
+
+    const updatedOrderForm = updateObject(this.state.orderForm, {
+      [inputIdentifier]: updatedInput,
+    });
 
     let formIsValid = true;
-    for (let inputIdentifier in updatedForm) {
-      formIsValid = formIsValid && updatedForm[inputIdentifier].validationResult.isValid;
+    for (let inputIdentifier in updatedOrderForm) {
+      formIsValid = formIsValid && updatedOrderForm[inputIdentifier].validationResult.isValid;
     }
-    this.setState({ orderForm: updatedForm, formIsValid });
+    this.setState({ orderForm: updatedOrderForm, formIsValid });
   }
 
   render() {
