@@ -1,14 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Layout from './hoc/Layout/Layout';
-import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
-import Checkout from './containers/Checkout/Checkout';
-import Orders from './containers/Orders/Orders';
-import Auth from './containers/Auth/Auth';
-import Logout from './containers/Auth/Logout/Logout';
+import Spinner from './components/UI/Spinner/Spinner';
 import * as actions from './store/actions/index';
+
+// Components for different routes
+import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
+const Checkout = React.lazy(() => import('./containers/Checkout/Checkout'));
+const Orders = React.lazy(() => import('./containers/Orders/Orders'));
+const Auth = React.lazy(() => import('./containers/Auth/Auth'));
+const Logout = React.lazy(() => import('./containers/Auth/Logout/Logout'));
 
 class App extends Component {
 
@@ -41,7 +44,9 @@ class App extends Component {
     return (
       <div>
         <Layout>
-          {routes}
+          <Suspense fallback={<Spinner />}>
+            {routes}
+          </Suspense>
         </Layout>
       </div>
     );
