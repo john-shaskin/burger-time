@@ -65,7 +65,6 @@ export const auth = (email, password, isSignup) => {
 
     axios.post(url, postData)
       .then(response => {
-        console.log(response);
         localStorage.setItem(TOKEN_KEY, response.data.idToken);
         localStorage.setItem(EXPIRATION_TIME_KEY, new Date(new Date().getTime() + response.data.expiresIn * 1000));
         dispatch(authSucceeded(response.data.idToken, response.data.localId));
