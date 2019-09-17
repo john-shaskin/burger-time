@@ -13,6 +13,7 @@ new StaticSiteStack(app, 'BurgerTimeStaticSite', {
   hostedZoneIdSsmPath: hostedZoneIdSsmPath,
   hostedZoneNameSsmPath: hostedZoneNameSsmPath,
   sslCertificateArnSsmPath: sslCertificateArnSsmPath,
+  useCloudFrontDistribution: true,
   env: {
     region: 'us-west-2',
   },
