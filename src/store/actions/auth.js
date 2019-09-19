@@ -5,10 +5,16 @@ import * as actionTypes from './actionTypes';
 const TOKEN_KEY = 'token';
 const EXPIRATION_TIME_KEY = 'expirationTime';
 
+export const authStateChecked = () => {
+  return {
+    type: actionTypes.AUTH_STATE_CHECKED,
+  };
+};
+
 export const authStart = () => {
   return {
     type: actionTypes.AUTH_START,
-  }
+  };
 };
 
 export const authSucceeded = (idToken, userId) => {
@@ -93,6 +99,8 @@ export const authCheckState = () => {
 
     const token = localStorage.getItem(TOKEN_KEY);
     const expirationTimeStr = localStorage.getItem(EXPIRATION_TIME_KEY);
+    dispatch(authStateChecked());
+
     if (token && expirationTimeStr) {
       const expiry = new Date(expirationTimeStr);
       const now = new Date();

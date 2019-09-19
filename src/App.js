@@ -20,11 +20,18 @@ class App extends Component {
   }
 
   render() {
+    let notFoundRedirect = null;
+    if (this.props.isAuthStateChecked) {
+      notFoundRedirect = (
+        <Redirect to="/" />
+      );
+    }
+
     let routes = (
       <Switch>
         <Route path="/auth" component={Auth} />
         <Route path="/" exact component={BurgerBuilder} />
-        <Redirect to="/" />
+        {notFoundRedirect}
       </Switch>
     );
 
@@ -36,7 +43,7 @@ class App extends Component {
           <Route path="/logout" component={Logout} />
           <Route path="/auth" component={Auth} />
           <Route path="/" exact component={BurgerBuilder} />
-          <Redirect to="/" />
+          {notFoundRedirect}
         </Switch>
       );
     }
@@ -55,6 +62,7 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
+    isAuthStateChecked: state.auth.stateChecked,
     isAuthenticated: state.auth.token !== null,
   };
 }

@@ -6,7 +6,12 @@ const initialState = {
   userId: null,
   error: null,
   loading: false,
+  stateChecked: false,
   authRedirectPath: '/',
+}
+
+const stateChecked = (state, action) => {
+  return updateObject(state, { authStateChecked: true });
 }
 
 const authStart = (state, action) => {
@@ -14,11 +19,11 @@ const authStart = (state, action) => {
 }
 
 const authSucceeded = (state, action) => {
-  return updateObject(state, { error: null, loading: false, token: action.idToken, userId: action.userId });
+  return updateObject(state, { error: null, loading: false, stateInitialized: true, token: action.idToken, userId: action.userId });
 }
 
 const authFailed = (state, action) => {
-  return updateObject(state, { error: action.error, loading: false, token: null, userId: null });
+  return updateObject(state, { error: action.error, loading: false, stateInitialized: true, token: null, userId: null });
 }
 
 const authLogout = (state, action) => {
@@ -31,6 +36,7 @@ const setAuthRedirectPath = (state, action) => {
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
+    case actionTypes.AUTH_STATE_CHECKED: return stateChecked(state, action);
     case actionTypes.AUTH_START: return authStart(state, action);
     case actionTypes.AUTH_SUCCEEDED: return authSucceeded(state, action);
     case actionTypes.AUTH_FAILED: return authFailed(state, action);
