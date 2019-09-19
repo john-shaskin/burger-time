@@ -1,68 +1,48 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Burger Time!
 
-## Available Scripts
+This is a sample React app, created from Maximillian Schwarzmuller's Udemy course. From that course, it has been updated with CDK-based deployment infrastructure. This README briefly describes packaging and deployment of this React app. It should change, as I update the automation.
 
-In the project directory, you can run:
+The app is built based on the `create-react-app` module, and has been ejected, to enable more full control.
 
-### `npm start`
+## Local Dev Server
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+To run the app locally in dev mode, run
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+`npm start`
 
-### `npm test`
+This will fire up the app on port 3000. Visit and test it by navigating to `http://localhost:3000` in your browser.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Packaging
 
-### `npm run build`
+ To package the app for deployment:
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+ ```
+ npm run build
+ ```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+ This will run webpack to prepare the app to be deployed as a SPA.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+ ## Deployment
 
-### `npm run eject`
+ I still need to hook up automation in the root-level path for deploying the CDK app, but for now you will need to navigate to the `infra` folder, which contains the CDK application.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+ This deployment is based on AWS, as you would expect from using CDK. It deploys the React app as a static website using:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+ * S3
+ * CloudFront
+ * Route53
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+ There is an option to configure this to exclude CloudFront. However there are currently a couple of problems with that.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+ 1. CloudFront gives us the ability to secure the website interaction with HTTPS. Using plain S3, the website is served up unencrypted.
+ 2. The Route53 integration to configure an alias for S3 in CDK is broken. So, you'd need to hack around that, and correctly configure the alias value to point to the S3 bucket's website fully qualified domain name OR manually fudge it via the console.
 
-## Learn More
+ Deploying:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+ 1. Ensure you have [configured AWS credentials](https://link-to-page-on-credentials-setup.amazon.com)
+ 2. Run the packaging scripts from the previous section, to ensure you have a new built package of website to deploy.
+ 3. Run
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+ ```
+ cdk deploy
+ ```
