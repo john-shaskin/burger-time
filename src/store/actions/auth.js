@@ -52,36 +52,11 @@ export const checkAuthTimeout = (expirationTime) => {
 }
 
 export const auth = (email, password, isSignup) => {
-  return dispatch => {
-    dispatch(authStart());
-
-    const apiKey = process.env.REACT_APP_FIREBASE_API_KEY;
-    if (!apiKey) {
-      return Promise.reject('There is no configured API key for Firebase');
-    }
-
-    let url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`;
-    let postData = {
-      email,
-      password,
-      returnSecureToken: true,
-    };
-
-    if (!isSignup) {
-      url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
-    }
-
-    axios.post(url, postData)
-      .then(response => {
-        localStorage.setItem(TOKEN_KEY, response.data.idToken);
-        localStorage.setItem(EXPIRATION_TIME_KEY, new Date(new Date().getTime() + response.data.expiresIn * 1000));
-        dispatch(authSucceeded(response.data.idToken, response.data.localId));
-        dispatch(checkAuthTimeout(response.data.expiresIn));
-      })
-      .catch(err => {
-        dispatch(authFailed(err.response.data.error));
-      });
-
+  return {
+    type: actionTypes.AUTH_LOGIN_INIT,
+    email,
+    password,
+    isSignup,
   };
 };
 
