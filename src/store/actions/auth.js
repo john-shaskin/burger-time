@@ -1,9 +1,4 @@
-import axios from 'axios';
-
 import * as actionTypes from './actionTypes';
-
-const TOKEN_KEY = 'token';
-const EXPIRATION_TIME_KEY = 'expirationTime';
 
 export const authStateChecked = () => {
   return {
@@ -68,34 +63,7 @@ export const setAuthRedirectPath = (path) => {
 };
 
 export const authCheckState = () => {
-  return dispatch => {
-    const apiKey = process.env.REACT_APP_FIREBASE_API_KEY;
-    if (!apiKey) {
-      return Promise.reject('There is no configured API key for Firebase');
-    }
-
-    const token = localStorage.getItem(TOKEN_KEY);
-    const expirationTimeStr = localStorage.getItem(EXPIRATION_TIME_KEY);
-    dispatch(authStateChecked());
-
-    if (token && expirationTimeStr) {
-      const expiry = new Date(expirationTimeStr);
-      const now = new Date();
-
-      if (expiry < now) {
-        dispatch(logout());
-      } else {
-        axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`, {
-          idToken: token,
-        }).then(response => {
-          dispatch(authSucceeded(token, response.data.users[0].localId));
-          dispatch(checkAuthTimeout((expiry.getTime() - new Date().getTime()) / 1000));
-        }).catch(err => {
-          dispatch(authFailed(err));
-        });
-      }
-    } else {
-      dispatch(logout());
-    }
-  }
+  return {
+    type: actionTypes.AUTH_CHECK_STATE,
+  };
 }

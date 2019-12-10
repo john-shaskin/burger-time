@@ -18,4 +18,5 @@ export {
   authSucceeded,
   authFailed,
   checkAuthTimeout,
+  authStateChecked,
 } from './auth';

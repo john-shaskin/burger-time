@@ -47,3 +47,38 @@ export function* authUserSaga(action) {
     yield put(actions.authFailed(err.response.data.error));
   }
 }
+
+export function* authCheckStateSaga(action) {
+  const apiKey = process.env.REACT_APP_FIREBASE_API_KEY;
+  if (!apiKey) {
+    return Promise.reject('There is no configured API key for Firebase');
+  }
+
+  const token = yield localStorage.getItem(TOKEN_KEY);
+  const expirationTimeStr = yield localStorage.getItem(EXPIRATION_TIME_KEY);
+  yield put(actions.authStateChecked());
+
+  if (token && expirationTimeStr) {
+    const expiry = new Date(expirationTimeStr);
+    const now = new Date();
+
+    if (expiry < now) {
+      yield put(actions.logout());
+    } else {
+
+      try {
+        const response = yield axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`, {
+          idToken: token,
+        });
+        yield put(actions.authSucceeded(token, response.data.users[0].localId));
+        yield put(actions.checkAuthTimeout((expiry.getTime() - new Date().getTime()) / 1000));
+      }
+      catch(err) {
+        yield put(actions.authFailed(err));
+      }
+
+    }
+  } else {
+    yield put(actions.logout());
+  }
+}
