@@ -51,7 +51,7 @@ export class StaticSiteStack extends cdk.Stack {
     const staticAssetsPath = props.staticAssetsPath || '../build/';
     new s3Deployment.BucketDeployment(this, 'SiteDeployment', {
       destinationBucket: bucket,
-      source: s3Deployment.Source.asset(staticAssetsPath),
+      sources: [s3Deployment.Source.asset(staticAssetsPath)],
     } as s3Deployment.BucketDeploymentProps);
 
     // Bucket target is totally broken...
