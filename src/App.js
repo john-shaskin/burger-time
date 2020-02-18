@@ -1,4 +1,4 @@
-import React, { Component, Suspense } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -13,52 +13,50 @@ const Orders = React.lazy(() => import('./containers/Orders/Orders'));
 const Auth = React.lazy(() => import('./containers/Auth/Auth'));
 const Logout = React.lazy(() => import('./containers/Auth/Logout/Logout'));
 
-class App extends Component {
+const app = props => {
 
-  componentDidMount() {
-    this.props.onAuthCheckState();
+  useEffect(() => {
+    props.onAuthCheckState();
+  }, []);
+
+  let notFoundRedirect = null;
+  if (props.isAuthStateChecked) {
+    notFoundRedirect = (
+      <Redirect to="/" />
+    );
   }
 
-  render() {
-    let notFoundRedirect = null;
-    if (this.props.isAuthStateChecked) {
-      notFoundRedirect = (
-        <Redirect to="/" />
-      );
-    }
+  let routes = (
+    <Switch>
+      <Route path="/auth" component={Auth} />
+      <Route path="/" exact component={BurgerBuilder} />
+      {notFoundRedirect}
+    </Switch>
+  );
 
-    let routes = (
+  if (props.isAuthenticated) {
+    routes = (
       <Switch>
+        <Route path="/checkout" component={Checkout} />
+        <Route path="/orders" component={Orders} />
+        <Route path="/logout" component={Logout} />
         <Route path="/auth" component={Auth} />
         <Route path="/" exact component={BurgerBuilder} />
         {notFoundRedirect}
       </Switch>
     );
-
-    if (this.props.isAuthenticated) {
-      routes = (
-        <Switch>
-          <Route path="/checkout" component={Checkout} />
-          <Route path="/orders" component={Orders} />
-          <Route path="/logout" component={Logout} />
-          <Route path="/auth" component={Auth} />
-          <Route path="/" exact component={BurgerBuilder} />
-          {notFoundRedirect}
-        </Switch>
-      );
-    }
-
-    return (
-      <div>
-        <Layout>
-          <Suspense fallback={<Spinner />}>
-            {routes}
-          </Suspense>
-        </Layout>
-      </div>
-    );
   }
-}
+
+  return (
+    <div>
+      <Layout>
+        <Suspense fallback={<Spinner />}>
+          {routes}
+        </Suspense>
+      </Layout>
+    </div>
+  );
+};
 
 const mapStateToProps = state => {
   return {
@@ -73,4 +71,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(app));
