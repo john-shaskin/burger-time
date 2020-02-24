@@ -14,10 +14,10 @@ const Auth = React.lazy(() => import('./containers/Auth/Auth'));
 const Logout = React.lazy(() => import('./containers/Auth/Logout/Logout'));
 
 const app = props => {
-
+  const { onAuthCheckState } = props;
   useEffect(() => {
-    props.onAuthCheckState();
-  }, []);
+    onAuthCheckState();
+  }, [onAuthCheckState]);
 
   let notFoundRedirect = null;
   if (props.isAuthStateChecked) {

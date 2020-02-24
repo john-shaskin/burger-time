@@ -11,47 +11,48 @@ import { updateObject, validateInput } from '../../shared/utility';
 
 const auth = props => {
   const [authForm, setAuthForm] = useState({
-      email: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'email',
-          placeholder: 'Email Address'
-        },
-        value: '',
-        validation: {
-          required: true,
-          isEmail: true,
-        },
-        validationResult: {
-          isValid: false,
-          errorMessage: null,
-        },
+    email: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'email',
+        placeholder: 'Email Address'
       },
-      password: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'password',
-          placeholder: 'Password'
-        },
-        value: '',
-        validation: {
-          required: true,
-          minLength: 6,
-        },
-        validationResult: {
-          isValid: false,
-          errorMessage: null,
-        },
+      value: '',
+      validation: {
+        required: true,
+        isEmail: true,
       },
-    });
-    const [formIsValid, setFormIsValid] = useState(false);
-    const [isSignup, setIsSignup] = useState(true);
+      validationResult: {
+        isValid: false,
+        errorMessage: null,
+      },
+    },
+    password: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'password',
+        placeholder: 'Password'
+      },
+      value: '',
+      validation: {
+        required: true,
+        minLength: 6,
+      },
+      validationResult: {
+        isValid: false,
+        errorMessage: null,
+      },
+    },
+  });
+  const [formIsValid, setFormIsValid] = useState(false);
+  const [isSignup, setIsSignup] = useState(true);
 
+  const {buildingBurger, authRedirectPath, onSetAuthRedirectPath} = props;
   useEffect(() => {
-    if (!props.buildingBurger && props.authRedirectPath !== '/') {
-      props.onSetAuthRedirectPath('/');
+    if (!buildingBurger && authRedirectPath !== '/') {
+      onSetAuthRedirectPath('/');
     }
-  }, []);
+  }, [buildingBurger, authRedirectPath, onSetAuthRedirectPath]);
 
   const inputChangedHandler = (event, controlName) => {
     const updatedControls = updateObject(authForm, {
