@@ -1,4 +1,4 @@
-# Burger Time!
+# Burger Time!!
 
 This is a sample React app, created from Maximillian Schwarzmuller's Udemy course. From that course, it has been updated with CDK-based deployment infrastructure. This README briefly describes packaging and deployment of this React app. It should change, as I update the automation.
 
